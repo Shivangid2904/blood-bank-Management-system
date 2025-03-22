@@ -555,7 +555,7 @@ def entry2():
     tkinter.messagebox.showinfo("DONE", "INFORMATION ADDED SUCCESSFULLY")
 
      
-    if p8=="AB+":
+    if p18=="AB+":
          query="Select * from donor where dbldgrp = 'AB+';"
          cur.execute(query)
          x=cur.fetchall()
@@ -567,7 +567,7 @@ def entry2():
          else:
            cur.execute("Delete from donor where dbldgrp='AB+' LIMIT 1;")
            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")
-    elif p8=="AB-":
+    elif p18=="AB-":
          query="Select * from donor where dbldgrp = 'AB-' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -580,7 +580,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='AB-' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")      
-    elif p8=="A+":
+    elif p18=="A+":
         query="Select dphno from donor where dbldgrp = 'A+' LIMIT 1;"
         cur.execute(query)
         x=cur.fetchall()
@@ -592,7 +592,7 @@ def entry2():
         else:
             cur.execute("Delete from donor where dbldgrp= 'A+' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE  PRESENT IN BLOOD BANK!")   
-    elif p8=="B+":
+    elif p18=="B+":
          query="Select * from donor where dbldgrp = 'B+' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -604,7 +604,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='B+' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")    
-    elif p8=="O+":
+    elif p18=="O+":
          query="Select * from donor where dbldgrp = 'O+' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -616,7 +616,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='O+' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")      
-    elif p8=="A-":
+    elif p18=="A-":
          query="Select * from donor where dbldgrp = 'A-' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -628,7 +628,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='A-' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")    
-    elif p8=="B-":
+    elif p18=="B-":
          query="Select * from donor where dbldgrp = 'B-' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -640,7 +640,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='B-' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")      
-    elif p8=="O-":
+    elif p18=="O-":
          query="Select * from donor where dbldgrp = 'O-' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
