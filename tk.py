@@ -280,12 +280,12 @@ def choice_func():
         w12.destroy()
         w13.destroy()
         w14.destroy()
-        
-        global rname, rage, rphno, rbldgrp, rgender, rdate, rblood_component
 
+        global rname, rage, rphno, rbldgrp, rgender, rdate, rblood_component, rreason, runits, rtransfusion, rchronic, rsurgery
+        prj.geometry("925x500+250+100")
         prj.title("NEW RECEIVER ENTRY")
-        lable = Label(prj, text="NEW RECEIVER ENTRY", font='arial 25 bold', bg="white")
-        lable.pack()
+        Label(prj, text="NEW RECEIVER ENTRY", font='arial 25 bold', bg="white").pack()
+        
 
         icon_image = PhotoImage(file="logo.png")
         prj.iconphoto(False, icon_image)
@@ -294,47 +294,40 @@ def choice_func():
         frame.pack()
 
         # Name
-        l5 = Label(prj, text="NAME", bg="white")
-        l5.place(x=10, y=70)
+        Label(prj, text="NAME", bg="white").place(x=10, y=70)
         rname = Entry(prj, width=20, bd=5)
         rname.place(x=170, y=70)
 
         # Age
-        l6 = Label(prj, text="AGE", bg="white")
-        l6.place(x=10, y=110)
+        Label(prj, text="AGE", bg="white").place(x=10, y=110)
         rage = Entry(prj, width=20, bd=5)
         rage.place(x=170, y=110)
 
         # Phone Number
-        l7 = Label(prj, text="PHONE NO.", bg="white")
-        l7.place(x=10, y=150)
+        Label(prj, text="PHONE NO.", bg="white").place(x=10, y=150)
         rphno = Entry(prj, width=20, bd=5)
         rphno.place(x=170, y=150)
 
         # Blood Group
-        l8 = Label(prj, text="BLOOD GROUP", bg="white")
-        l8.place(x=10, y=190)
+        Label(prj, text="BLOOD GROUP", bg="white").place(x=10, y=190)
         rbldgrp = Combobox(prj, value=['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], width=18)
         rbldgrp.place(x=170, y=190)
         rbldgrp.set('A+')
 
         # Gender
-        l10 = Label(prj, text="GENDER", bg="white")
-        l10.place(x=10, y=230)
+        Label(prj, text="GENDER", bg="white").place(x=10, y=230)
         rgender = Combobox(prj, value=['Male', 'Female', 'Other'], width=18)
         rgender.place(x=170, y=230)
         rgender.set('Male')
 
         # Receiving Date
-        l12 = Label(prj, text="Receiving Date", bg="white")
-        l12.place(x=10, y=270)
+        Label(prj, text="Receiving Date", bg="white").place(x=10, y=270)
         rdate = Entry(prj, width=20, bd=5)
         rdate.place(x=170, y=270)
         rdate.insert(0, datetime.date.today().strftime("%Y-%m-%d"))
 
-        # Blood Component (Dropdown)
-        l13 = Label(prj, text="Blood Component", bg="white")
-        l13.place(x=10, y=310)
+        # Blood Component
+        Label(prj, text="Blood Component", bg="white").place(x=10, y=310)
         rblood_component = Combobox(prj, value=[
             "Whole Blood", "Single Donor Platelet", "Single Donor Plasma", "Sagm Packed Red Blood Cells",
             "Random Donor Platelets", "Platelet Rich Plasma", "Platelet Concentrate", "Plasma",
@@ -344,16 +337,47 @@ def choice_func():
         rblood_component.place(x=170, y=310)
         rblood_component.set("Whole Blood")
 
+        # Reason for Blood Requirement
+        Label(prj, text="Reason for Blood Requirement", bg="white").place(x=10, y=350)
+        rreason = Combobox(prj, value=["Surgery", "Accident", "Anemia", "Cancer", "Other"], width=22)
+        rreason.place(x=190, y=350)
+        rreason.set("Surgery")
+
+        # Units of Blood Required
+        Label(prj, text="Units of Blood Required", bg="white").place(x=10, y=390)
+        runits = Entry(prj, width=20, bd=5)
+        runits.place(x=170, y=390)
+        runits.insert(0, "1")
+
+        # Previous Transfusion History
+        Label(prj, text="Previous Transfusion History", bg="white").place(x=10, y=430)
+        rtransfusion = Combobox(prj, value=["Yes", "No"], width=18)
+        rtransfusion.place(x=170, y=430)
+        rtransfusion.set("No")
+
+        # Chronic Diseases
+        Label(prj, text="Any Chronic Diseases?", bg="white").place(x=340, y=70)
+        rchronic = Combobox(prj, value=["Diabetes", "Hypertension", "Heart Disease", "None"], width=22)
+        rchronic.place(x=500, y=70)
+        rchronic.set("None")
+
+        # Recent Surgeries or Medical Conditions
+        Label(prj, text="Recent Surgeries or Medical Conditions?", bg="white").place(x=340, y=110)
+        rsurgery = Entry(prj, width=20, bd=5)
+        rsurgery.place(x=570, y=110)
+        rsurgery.insert(0, "No")
+
         # Submit Button
-        b1 = Button(prj, text="SUBMIT", command=lambda: [entry2(), entry3()])
-        b1.place(x=200, y=350)
+        Button(prj, text="SUBMIT",bg="red",fg="white", command=lambda: [entry2(), entry3()]).place(x=500, y=150)
 
         # Image
         imgDon = PhotoImage(file='bloodReceiver.png')
-        Label(prj, image=imgDon, bg="white").place(x=450, y=125)
+        Label(prj, image=imgDon, bg="white").place(x=700, y=150)
 
         prj.resizable(False, False)
         prj.mainloop()
+
+
      def on_win_close():
            if("DISPLAY" in prj.title() or "ENTRY" in prj.title()):
                prj.destroy()
@@ -502,23 +526,36 @@ def entry():
         csv_w.writerow(values)
     tkinter.messagebox.showinfo("DONE","INFORMATION ADDED SUCCESSFULLY")
 def entry2():
-     global rname,rage,rphno,rbldgrp,rgender,trv,frame2
-     p5=rname.get()
-     p6=rage.get()
-     p7=rphno.get()
-     p8=rbldgrp.get()
-     p10=rgender.get()
-     sql1_insert='insert into receiver values("{}","{}","{}","{}","{}")'.format(p5,p6,p7,p8,p10)
-     cur.execute(sql1_insert)
-     conn.commit()
-     rows=[p5,p6,p7,p8,p10]
-     f= open("receiver.csv",'a')
-     csv_w=csv.writer(f)
-     csv_w.writerow(rows)
-     f.close()
-     tkinter.messagebox.showinfo("DONE","INFORMATION ADDED SUCCESSFULLY")
+    global rname, rage, rphno, rbldgrp, rgender, rdate, rblood_component, rreason, runits, rtransfusion, rchronic, rsurgery
+    p15 = rname.get()
+    p16 = rage.get()
+    p17 = rphno.get()
+    p18 = rbldgrp.get()
+    p19 = rgender.get()
+    p20 = rdate.get()
+    p21 = rblood_component.get()
+    p22 = rreason.get()
+    p23 = runits.get()
+    p24 = rtransfusion.get()
+    p25 = rchronic.get()
+    p26 = rsurgery.get()
+
+    sql1_insert = 'INSERT INTO receiver VALUES ("{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}","{}")'.format(
+        p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26
+    )
+    
+    cur.execute(sql1_insert)
+    conn.commit()
+    
+    rows = [p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26]
+    with open("receiver.csv", 'a') as f:
+        csv_w = csv.writer(f)
+        csv_w.writerow(rows)
+
+    tkinter.messagebox.showinfo("DONE", "INFORMATION ADDED SUCCESSFULLY")
+
      
-     if p8=="AB+":
+    if p8=="AB+":
          query="Select * from donor where dbldgrp = 'AB+';"
          cur.execute(query)
          x=cur.fetchall()
@@ -530,7 +567,7 @@ def entry2():
          else:
            cur.execute("Delete from donor where dbldgrp='AB+' LIMIT 1;")
            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")
-     elif p8=="AB-":
+    elif p8=="AB-":
          query="Select * from donor where dbldgrp = 'AB-' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -543,7 +580,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='AB-' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")      
-     elif p8=="A+":
+    elif p8=="A+":
         query="Select dphno from donor where dbldgrp = 'A+' LIMIT 1;"
         cur.execute(query)
         x=cur.fetchall()
@@ -555,7 +592,7 @@ def entry2():
         else:
             cur.execute("Delete from donor where dbldgrp= 'A+' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE  PRESENT IN BLOOD BANK!")   
-     elif p8=="B+":
+    elif p8=="B+":
          query="Select * from donor where dbldgrp = 'B+' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -567,7 +604,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='B+' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")    
-     elif p8=="O+":
+    elif p8=="O+":
          query="Select * from donor where dbldgrp = 'O+' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -579,7 +616,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='O+' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")      
-     elif p8=="A-":
+    elif p8=="A-":
          query="Select * from donor where dbldgrp = 'A-' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -591,7 +628,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='A-' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")    
-     elif p8=="B-":
+    elif p8=="B-":
          query="Select * from donor where dbldgrp = 'B-' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -603,7 +640,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='B-' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")      
-     elif p8=="O-":
+    elif p8=="O-":
          query="Select * from donor where dbldgrp = 'O-' LIMIT 1;"
          cur.execute(query)
          x=cur.fetchall()
@@ -616,7 +653,7 @@ def entry2():
          else:
             cur.execute("Delete from donor where dbldgrp='O-' LIMIT 1;")
             tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")
-     conn.commit()
+    conn.commit()
 def entry3():
     p8=rbldgrp.get()
     if p8=='AB+':
