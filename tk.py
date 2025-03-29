@@ -16,57 +16,64 @@ icon_image=PhotoImage(file="logo.png")
 prj.iconphoto(False,icon_image)
 
 def choice_func():
-     def dispDonor():
-           login.destroy()
-           b2.destroy()
-           b3.destroy()
-           btn_frame.destroy()
-           menu.destroy()
-           w1.destroy()
-           w2.destroy()
-           w3.destroy()
-           w4.destroy()
-           w5.destroy()
-           w6.destroy()
-           w7.destroy()
-           w8.destroy()
-           w9.destroy()
-           w10.destroy()
-           w11.destroy()
-           w12.destroy()
-           w13.destroy()
-           w14.destroy()
+     global prj
+     def dispStock():
+        # Clear previous widgets if dispStock is called multiple times
+        for widget in prj.winfo_children():
+            widget.destroy()
 
-           global rname,rage,rphno,rbldgrp,rgender,trv,frame2
-           columns = ('n', 'a', 'p','b','g')
-           tree = ttk.Treeview(prj, columns=columns, show='headings')
-           tree.heading('n', text='Name')
-           tree.heading('a', text='Age')
-           tree.heading('p', text='Phone No.')
-           tree.heading('b', text='Blood Group')
-           tree.heading('g', text='Gender')
-           prj.geometry('1020x225')
-           icon_image=PhotoImage(file="logo.png")
-           prj.iconphoto(False,icon_image)
-           prj.title("DISPLAY DONOR INFORMATION")
-           contacts = []
-           query="select * from donor"
-           cur.execute(query)
-           x=cur.fetchall()
-           a=[]
-           for i in x:
-               a.append(i)
-           print(a)
-           for n in range(len(a)):
-               contacts.append(a[n])
-           for contact in contacts:
-               tree.insert('', END, values=contact)
-           tree.grid(row=0, column=0, sticky='nsew')
-           scrollbar = ttk.Scrollbar(prj, orient=VERTICAL, command=tree.yview)
-           tree.configure(yscroll=scrollbar.set)
-           scrollbar.grid(row=0, column=1, sticky='ns')
-           prj.resizable(False,False)
-           prj.mainloop()
+        prj.geometry('900x400')
+        prj.title("Blood Stock Availability")
+        
+        # Blood Group Input (ComboBox)
+        Label(prj, text="Blood Group:").pack(padx=10, pady=5)
+        blood_group_var = StringVar()
+        blood_group_combobox = ttk.Combobox(prj, textvariable=blood_group_var, values=[
+            'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'
+        ], state="readonly")
+        blood_group_combobox.pack(padx=10, pady=5)
+        
+        # Blood Type Input (ComboBox)
+        Label(prj, text="Blood Type:").pack(padx=10, pady=5)
+        blood_type_var = StringVar()
+        blood_type_combobox = ttk.Combobox(prj, textvariable=blood_type_var, values=[
+            "Whole Blood", "Single Donor Platelet", "Single Donor Plasma", "Sagm Packed Red Blood Cells",
+            "Random Donor Platelets", "Platelet Rich Plasma", "Platelet Concentrate", "Plasma",
+            "Packed Red Blood Cells", "Leukoreduced RBC", "Irradiated RBC", "Fresh Frozen Plasma",
+            "Cryoprecipitate", "Cryo Poor Plasma"
+        ], state="readonly")
+        blood_type_combobox.pack(padx=10, pady=5)
+
+        # TreeView Table
+        columns = ('Name', 'Age', 'Phone No.', 'Units')
+        tree = ttk.Treeview(prj, columns=columns, show='headings')
+        for col in columns:
+            tree.heading(col, text=col)
+        tree.pack(padx=8, pady=4)
+
+        scrollbar = ttk.Scrollbar(prj, orient=VERTICAL, command=tree.yview)
+        tree.configure(yscroll=scrollbar.set)
+        scrollbar.pack(side=RIGHT, fill=Y)
+
+        # ✅ Define `search_stock` inside `dispStock()`
+        def search_stock():
+            tree.delete(*tree.get_children())  # Clear previous data
+            blood_group = blood_group_var.get()
+            blood_type = blood_type_var.get()
+            
+            query = "SELECT dname, dage, dphno,dunits FROM donor WHERE dbldgrp=%s AND dpreftype=%s"
+            cur.execute(query, (blood_group, blood_type))
+            records = cur.fetchall()
+            
+            if records:
+                for record in records:
+                    tree.insert('', END, values=record)
+            else:
+                tree.insert('', END, values=("No stock available", "", "", "", ""))
+
+        # ✅ Search Button (Now it correctly references `search_stock`)
+        search_button = Button(prj, text="Check Availability", command=search_stock)
+        search_button.pack(pady=10)
      def dispReceiv():
            login.destroy()
            b2.destroy()
@@ -140,7 +147,7 @@ def choice_func():
         w14.destroy()
 
         global dname, dage, dphno, dbldgrp, dgender, ddate, dweight, dlastdon, ddonorid, ddonatedbefore
-        global dpreftype, demergency, dillness, dmedications
+        global dpreftype, demergency, dillness,dmedications,dunits
 
         prj.geometry("925x500+250+100")
         prj.title("NEW DONOR ENTRY")
@@ -216,7 +223,10 @@ def choice_func():
         # Preferred Donation Type
         l14 = Label(prj, text="PREFERRED DONATION TYPE", bg="white")
         l14.place(x=10, y=430)
-        dpreftype = Combobox(prj, value=['Whole Blood', 'Plasma', 'Platelets'], width=18)
+        dpreftype = Combobox(prj, value=["Whole Blood", "Single Donor Platelet", "Single Donor Plasma", "Sagm Packed Red Blood Cells",
+            "Random Donor Platelets", "Platelet Rich Plasma", "Platelet Concentrate", "Plasma",
+            "Packed Red Blood Cells", "Leukoreduced RBC", "Irradiated RBC", "Fresh Frozen Plasma",
+            "Cryoprecipitate", "Cryo Poor Plasma"], width=18)
         dpreftype.place(x=170, y=430)
         dpreftype.set('Whole Blood')
 
@@ -250,9 +260,16 @@ def choice_func():
         today = datetime.date.today().strftime("%Y-%m-%d")
         ddate.insert(0, today)  # Auto-fill today’s date
 
+        # Number of Units Donating
+        l19 = Label(prj, text="NO. OF UNITS DONATING", bg="white")
+        l19.place(x=340, y=230)
+        dunits = Entry(prj, width=20, bd=5)
+        dunits.place(x=500, y=230)
+
+
         # Submit Button
         b4 = Button(prj, text="SUBMIT", command=entry, bg="red", fg="white", font="Arial 10 bold")
-        b4.place(x=500, y=250)
+        b4.place(x=500, y=270)
 
         # Donor Image
         imgDon = PhotoImage(file='bloodDonor.png')
@@ -396,7 +413,7 @@ def choice_func():
      login=Label(prj,text="BLOOD BANK MANAGEMENT SYSTEM",bg="red",fg="white",width=40,font=("Times New Roman",25,"bold"))
      b2=Button(btn_frame,width=20,text="DONOR",font="arial 12 bold",bg='black',fg='white',command=donor)
      b3=Button(btn_frame,width=20,text="RECEIVER",font="arial 12 bold",bg="black",fg="white",command=receiver)
-     b4=Button(btn_frame,width=20,text="DISPLAY DONORS",font="arial 12 bold",bg="black",fg="white",command=dispDonor)
+     b4=Button(btn_frame,width=20,text="DISPLAY DONORS",font="arial 12 bold",bg="black",fg="white",command=dispStock)
      b5=Button(btn_frame,width=20,text="DISPLAY RECEIVERS",font="arial 12 bold",bg="black",fg="white",command=dispReceiv)
 
      w1=Label(prj,text="IMPORTANT PRE REQUISITE",bg="red",fg="Black",width=30,font=("Times New Roman",18))
@@ -496,7 +513,8 @@ signin=Button(frame,width=6,text="Sign in",border=0,bg='white',cursor='hand2',fg
 signin.place(x=125,y=200)
 def entry():
     global dname, dage, dphno, dbldgrp, dgender, dweight, dlastdon, ddonorid
-    global ddonatedbefore, dpreftype, demergency, dillness, dmedications, ddate
+    global ddonatedbefore, dpreftype, demergency, dillness, dmedications, ddate, dunits
+
     # Get values from form fields
     p1 = dname.get()
     p2 = dage.get()
@@ -512,19 +530,26 @@ def entry():
     p12 = dillness.get()
     p13 = dmedications.get()
     p14 = ddate.get()
+    p15 = dunits.get()  
+
     # Insert query
     sql_insert = """INSERT INTO donor (dname, dage, dphno, dbldgrp, dgender, dweight, dlastdon, 
-                                       ddonorid, ddonatedbefore, dpreftype, demergency, dillness, dmedications, ddate) 
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-    values = (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14)
+                                       ddonorid, ddonatedbefore, dpreftype, demergency, dillness, 
+                                       dmedications, ddate, dunits) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    values = (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15)
+
     # Execute SQL insert
     cur.execute(sql_insert, values)
     conn.commit()
+
     # Save data to CSV
     with open("donor.csv", 'a', newline='') as f1:
         csv_w = csv.writer(f1)
         csv_w.writerow(values)
-    tkinter.messagebox.showinfo("DONE","INFORMATION ADDED SUCCESSFULLY")
+
+    tkinter.messagebox.showinfo("DONE", "INFORMATION ADDED SUCCESSFULLY")
+
 def entry2():
     global rname, rage, rphno, rbldgrp, rgender, rdate, rblood_component, rreason, runits, rtransfusion, rchronic, rsurgery
     p15 = rname.get()
@@ -555,7 +580,7 @@ def entry2():
     tkinter.messagebox.showinfo("DONE", "INFORMATION ADDED SUCCESSFULLY")
 
      
-    if p18=="AB+":
+    '''if p18=="AB+":
          query="Select * from donor where dbldgrp = 'AB+';"
          cur.execute(query)
          x=cur.fetchall()
@@ -652,7 +677,7 @@ def entry2():
                 
          else:
             cur.execute("Delete from donor where dbldgrp='O-' LIMIT 1;")
-            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")
+            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")'''
     conn.commit()
 def entry3():
     p8=rbldgrp.get()
