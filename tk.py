@@ -5,7 +5,7 @@ import tkinter.messagebox
 import csv
 import mysql.connector  as mycon
 import datetime
-conn=mycon.connect(host="localhost",user="root",passwd="shivangi2904",database="bbm")
+conn=mycon.connect(host="localhost",user="root",passwd="Sony@2003",database="bbm")
 cur=conn.cursor()
 import ast
 prj=Tk()
