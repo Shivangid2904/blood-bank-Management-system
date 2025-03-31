@@ -458,7 +458,7 @@ def choice_func():
 
 
      def on_win_close():
-           if("DISPLAY" in prj.title() or "ENTRY" in prj.title()):
+           if("Availability" in prj.title() or "ENTRY" in prj.title() or "Compatible" in prj.title()):
                prj.destroy()
                choice_func()
            exit()
