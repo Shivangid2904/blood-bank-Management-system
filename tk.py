@@ -69,61 +69,101 @@ def choice_func():
                 for record in records:
                     tree.insert('', END, values=record)
             else:
-                tree.insert('', END, values=("No stock available", "", "", "", ""))
+                tree.insert('', END, values=("No stock available", "", "", ""))
 
         # ✅ Search Button (Now it correctly references `search_stock`)
         search_button = Button(prj, text="Check Availability", command=search_stock)
         search_button.pack(pady=10)
      def dispReceiv():
-           login.destroy()
-           b2.destroy()
-           b3.destroy()
-           btn_frame.destroy()
-           menu.destroy()
-           w1.destroy()
-           w2.destroy()
-           w3.destroy()
-           w4.destroy()
-           w5.destroy()
-           w6.destroy()
-           w7.destroy()
-           w8.destroy()
-           w9.destroy()
-           w10.destroy()
-           w11.destroy()
-           w12.destroy()
-           w13.destroy()
-           w14.destroy()
-           global rname,rage,rphno,rbldgrp,rgender,trv,frame2
-           columns = ('n', 'a', 'p','b','g')
-           tree = ttk.Treeview(prj, columns=columns, show='headings')
-           tree.heading('n', text='Name')
-           tree.heading('a', text='Age')
-           tree.heading('p', text='Phone No.')
-           tree.heading('b', text='Blood Group')
-           tree.heading('g', text='Gender')
-           prj.geometry('1020x225')
-           icon_image=PhotoImage(file="logo.png")
-           prj.iconphoto(False,icon_image)
-           prj.title("DISPLAY RECEIVER INFORMATION")
-           contacts = []
-           query="select * from receiver"
-           cur.execute(query)
-           x=cur.fetchall()
-           a=[]
-           for i in x:
-               a.append(i)
-           for n in range(len(a)):
-               contacts.append(a[n])
-               print(a[n])
-           for contact in contacts:
-               tree.insert('', END, values=contact)
-           tree.grid(row=0, column=0, sticky='nsew')
-           scrollbar = ttk.Scrollbar(prj, orient=VERTICAL, command=tree.yview)
-           tree.configure(yscroll=scrollbar.set)
-           scrollbar.grid(row=0, column=1, sticky='ns')
-           prj.resizable(False,False)
-           prj.mainloop()
+        login.destroy()
+        b2.destroy()
+        b3.destroy()
+        btn_frame.destroy()
+        menu.destroy()
+        w1.destroy()
+        w2.destroy()
+        w3.destroy()
+        w4.destroy()
+        w5.destroy()
+        w6.destroy()
+        w7.destroy()
+        w8.destroy()
+        w9.destroy()
+        w10.destroy()
+        w11.destroy()
+        w12.destroy()
+        w13.destroy()
+        w14.destroy()
+        
+        # Blood Group and Type Input (ComboBox)
+        Label(prj, text="Blood Group:").pack(padx=10, pady=5)
+        blood_group_var = StringVar()
+        blood_group_combobox = ttk.Combobox(prj, textvariable=blood_group_var, values=[
+            'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'
+        ], state="readonly")
+        blood_group_combobox.pack(padx=10, pady=5)
+        
+        Label(prj, text="Blood Type:").pack(padx=10, pady=5)
+        blood_type_var = StringVar()
+        blood_type_combobox = ttk.Combobox(prj, textvariable=blood_type_var, values=[
+            "Whole Blood", "Single Donor Platelet", "Single Donor Plasma", "Sagm Packed Red Blood Cells",
+            "Random Donor Platelets", "Platelet Rich Plasma", "Platelet Concentrate", "Plasma",
+            "Packed Red Blood Cells", "Leukoreduced RBC", "Irradiated RBC", "Fresh Frozen Plasma",
+            "Cryoprecipitate", "Cryo Poor Plasma"
+        ], state="readonly")
+        blood_type_combobox.pack(padx=10, pady=5)
+
+        # TreeView Table for displaying the result
+        columns = ('Name', 'Age', 'Phone No.', 'Blood Group')
+        tree = ttk.Treeview(prj, columns=columns, show='headings')
+        for col in columns:
+            tree.heading(col, text=col)
+        tree.pack(padx=8, pady=4)
+
+        scrollbar = ttk.Scrollbar(prj, orient=VERTICAL, command=tree.yview)
+        tree.configure(yscroll=scrollbar.set)
+        scrollbar.pack(side=RIGHT, fill=Y)
+
+        def search_receiver():
+            tree.delete(*tree.get_children())  # Clear previous data
+            blood_group = blood_group_var.get()
+            blood_type = blood_type_var.get()
+
+            # Get compatible blood groups based on the input blood group
+            compatible_blood_groups = get_compatible_blood_groups(blood_group)
+            
+            # Check for compatible blood groups in the donor table
+            for compatible_group in compatible_blood_groups:
+                query = "SELECT dname, dage, dphno, dbldgrp FROM donor WHERE dbldgrp=%s"
+                cur.execute(query, (compatible_group,))
+                donor_records = cur.fetchall()
+                for donor in donor_records:
+                    tree.insert('', END, values=donor)
+
+        def get_compatible_blood_groups(blood_group):
+            # Define compatible blood groups based on ABO and Rh compatibility
+            compatible_groups = {
+                'A+': ['A+', 'A-', 'O+', 'O-'],
+                'A-': ['A-', 'O-'],
+                'B+': ['B+', 'B-', 'O+', 'O-'],
+                'B-': ['B-', 'O-'],
+                'AB+': ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'],
+                'AB-': ['AB-', 'A-', 'B-', 'O-'],
+                'O+': ['O+', 'O-'],
+                'O-': ['O-']
+            }
+            return compatible_groups.get(blood_group, [])
+
+        # Search Button to initiate the search
+        search_button = Button(prj, text="Check Availability", command=search_receiver)
+        search_button.pack(pady=10)
+
+        prj.geometry('900x400')
+        icon_image = PhotoImage(file="logo.png")
+        prj.iconphoto(False, icon_image)
+        prj.title("DISPLAY RECEIVER INFORMATION")
+        prj.resizable(False, False)
+
     
      def donor():
         login.destroy()
@@ -385,7 +425,7 @@ def choice_func():
         rsurgery.insert(0, "No")
 
         # Submit Button
-        Button(prj, text="SUBMIT",bg="red",fg="white", command=lambda: [entry2(), entry3()]).place(x=500, y=150)
+        Button(prj, text="SUBMIT",bg="red",fg="white", command=lambda: [entry2()]).place(x=500, y=150)
 
         # Image
         imgDon = PhotoImage(file='bloodReceiver.png')
@@ -413,8 +453,8 @@ def choice_func():
      login=Label(prj,text="BLOOD BANK MANAGEMENT SYSTEM",bg="red",fg="white",width=40,font=("Times New Roman",25,"bold"))
      b2=Button(btn_frame,width=20,text="DONOR",font="arial 12 bold",bg='black',fg='white',command=donor)
      b3=Button(btn_frame,width=20,text="RECEIVER",font="arial 12 bold",bg="black",fg="white",command=receiver)
-     b4=Button(btn_frame,width=20,text="DISPLAY DONORS",font="arial 12 bold",bg="black",fg="white",command=dispStock)
-     b5=Button(btn_frame,width=20,text="DISPLAY RECEIVERS",font="arial 12 bold",bg="black",fg="white",command=dispReceiv)
+     b4=Button(btn_frame,width=20,text="BLOOD AVAILABILITY",font="arial 12 bold",bg="black",fg="white",command=dispStock)
+     b5=Button(btn_frame,width=20,text="COMPATIBLE DONORS",font="arial 12 bold",bg="black",fg="white",command=dispReceiv)
 
      w1=Label(prj,text="IMPORTANT PRE REQUISITE",bg="red",fg="Black",width=30,font=("Times New Roman",18))
      w1.place(x=235,y=70)
@@ -578,234 +618,7 @@ def entry2():
         csv_w.writerow(rows)
 
     tkinter.messagebox.showinfo("DONE", "INFORMATION ADDED SUCCESSFULLY")
-
-     
-    '''if p18=="AB+":
-         query="Select * from donor where dbldgrp = 'AB+';"
-         cur.execute(query)
-         x=cur.fetchall()
-         a=[]
-         for i in x:
-             a.append(i)
-         if len(a)==0:
-             tkinter.messagebox.showerror("OOPS!!", "BLOOD TYPE NOT PRESENT IN BLOOD BANK")  
-         else:
-           cur.execute("Delete from donor where dbldgrp='AB+' LIMIT 1;")
-           tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")
-    elif p18=="AB-":
-         query="Select * from donor where dbldgrp = 'AB-' LIMIT 1;"
-         cur.execute(query)
-         x=cur.fetchall()
-         a=[]
-         for i in x:
-             a.append(i)
-         if len(a)==0:
-             tkinter.messagebox.showerror("OOPS!!", "BLOOD TYPE NOT PRESENT IN BLOOD BANK")
-                
-         else:
-            cur.execute("Delete from donor where dbldgrp='AB-' LIMIT 1;")
-            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")      
-    elif p18=="A+":
-        query="Select dphno from donor where dbldgrp = 'A+' LIMIT 1;"
-        cur.execute(query)
-        x=cur.fetchall()
-        a=[]
-        for i in x:
-          a.append(i)
-        if len(a)==0:
-            tkinter.messagebox.showerror("OOPS!!", "BLOOD TYPE NOT PRESENT IN BLOOD BANK")     
-        else:
-            cur.execute("Delete from donor where dbldgrp= 'A+' LIMIT 1;")
-            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE  PRESENT IN BLOOD BANK!")   
-    elif p18=="B+":
-         query="Select * from donor where dbldgrp = 'B+' LIMIT 1;"
-         cur.execute(query)
-         x=cur.fetchall()
-         a=[]
-         for i in x:
-             a.append(i)
-         if len(a)==0:
-             tkinter.messagebox.showerror("OOPS!!", "BLOOD TYPE NOT PRESENT IN BLOOD BANK")    
-         else:
-            cur.execute("Delete from donor where dbldgrp='B+' LIMIT 1;")
-            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")    
-    elif p18=="O+":
-         query="Select * from donor where dbldgrp = 'O+' LIMIT 1;"
-         cur.execute(query)
-         x=cur.fetchall()
-         a=[]
-         for i in x:
-             a.append(i)
-         if len(a)==0:
-             tkinter.messagebox.showerror("OOPS!!", "BLOOD TYPE NOT PRESENT IN BLOOD BANK")       
-         else:
-            cur.execute("Delete from donor where dbldgrp='O+' LIMIT 1;")
-            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")      
-    elif p18=="A-":
-         query="Select * from donor where dbldgrp = 'A-' LIMIT 1;"
-         cur.execute(query)
-         x=cur.fetchall()
-         a=[]
-         for i in x:
-             a.append(i)
-         if len(a)==0:
-             tkinter.messagebox.showerror("OOPS!!", "BLOOD TYPE NOT PRESENT IN BLOOD BANK")      
-         else:
-            cur.execute("Delete from donor where dbldgrp='A-' LIMIT 1;")
-            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")    
-    elif p18=="B-":
-         query="Select * from donor where dbldgrp = 'B-' LIMIT 1;"
-         cur.execute(query)
-         x=cur.fetchall()
-         a=[]
-         for i in x:
-             a.append(i)
-         if len(a)==0:
-             tkinter.messagebox.showerror("OOPS!!", "BLOOD TYPE NOT PRESENT IN BLOOD BANK")     
-         else:
-            cur.execute("Delete from donor where dbldgrp='B-' LIMIT 1;")
-            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")      
-    elif p18=="O-":
-         query="Select * from donor where dbldgrp = 'O-' LIMIT 1;"
-         cur.execute(query)
-         x=cur.fetchall()
-         a=[]
-         for i in x:
-             a.append(i)
-         if len(a)==0:
-             tkinter.messagebox.showerror("OOPS!!", "BLOOD TYPE NOT PRESENT IN BLOOD BANK")
-                
-         else:
-            cur.execute("Delete from donor where dbldgrp='O-' LIMIT 1;")
-            tkinter.messagebox.showinfo("DONE!!","BLOOD TYPE PRESENT IN BLOOD BANK!")'''
     conn.commit()
-def entry3():
-    p8=rbldgrp.get()
-    if p8=='AB+':
-         cur.execute("Select * from donor where dbldgrp in ('AB-','A+','A-','B+','B-','O-','O+')")             
-         y=cur.fetchall()
-         for z in y:
-                if z[3]== 'O+':
-                    cur.execute("Delete from donor where dbldgrp = 'O+' LIMIT 1;")
-                    tkinter.messagebox.showinfo("O+", "O+ BlOOD PRESENT IN BLOOD BANK")
-                    break
-                elif z[3]== 'O-':
-                    cur.execute("Delete from donor where dbldgrp = 'O-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("O-", "O- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                elif z[3]== 'A+':
-                    cur.execute("Delete from donor where dbldgrp = 'A+' LIMIT 1;")
-                    tkinter.messagebox.showinfo("A+", "A+ BlOOD PRESENT IN BLOOD BANK")
-                    break
-                elif z[3]== 'B+':
-                    cur.execute("Delete from donor where dbldgrp = 'B+' LIMIT 1;")
-                    tkinter.messagebox.showinfo("B+", "B+ BlOOD PRESENT IN BLOOD BANK")
-                    break
-                elif z[3]== 'AB-':
-                    cur.execute("Delete from donor where dbldgrp = 'AB-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("AB-", "AB- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                elif z[3]== 'A-':
-                    cur.execute("Delete from donor where dbldgrp = 'A-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("A-", "A- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                elif z[3]== 'B-':
-                    cur.execute("Delete from donor where dbldgrp = 'B-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("B-", "B- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                else:
-                    tkinter.messagebox.showinfo("OOPS!!","BLOOD BANK IS EMPTY")
-    elif p8=='AB-':
-         cur.execute("Select * from donor where dbldgrp in ('A-','B-','O-')")             
-         y=cur.fetchall()
-         for z in y:
-                if z[3]== 'O-':
-                    cur.execute("Delete from donor where dbldgrp = 'O-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("O-", "O- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                elif z[3]== 'A-':
-                    cur.execute("Delete from donor where dbldgrp = 'A-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("A-", "A- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                elif z[3]== 'B-':
-                    cur.execute("Delete from donor where dbldgrp = 'B-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("B-", "B- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                else:
-                    tkinter.messagebox.showinfo("OOPS!!","BLOOD BANK IS EMPTY")
-    elif p8=='O+':
-         cur.execute("Select * from donor where dbldgrp in ('O-')")             
-         y=cur.fetchall()
-         for z in y:
-                if z[3]== 'O-':
-                    cur.execute("Delete from donor where dbldgrp = 'O-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("O-", "O- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                else:
-                    tkinter.messagebox.showinfo("OOPS!!","BLOOD BANK IS EMPTY")
-    elif p8=='B+':
-         cur.execute("Select * from donor where dbldgrp in ('B+','B-','O-','O+')")             
-         y=cur.fetchall()
-         for z in y:
-                 if z[3]== 'O+':
-                    cur.execute("Delete from donor where dbldgrp = 'O+' LIMIT 1;")
-                    tkinter.messagebox.showinfo("O+", "O+ BlOOD PRESENT IN BLOOD BANK")
-                    break
-                 elif z[3]== 'O-':
-                    cur.execute("Delete from donor where dbldgrp = 'O-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("O-", "O- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                 elif z[3]== 'B+':
-                    cur.execute("Delete from donor where dbldgrp = 'B+' LIMIT 1;")
-                    tkinter.messagebox.showinfo("B+", "B+ BlOOD PRESENT IN BLOOD BANK")
-                    break
-                 elif z[3]== 'B-':
-                    cur.execute("Delete from donor where dbldgrp = 'B-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("B-", "B- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                 else:
-                    tkinter.messagebox.showinfo("OOPS!!","BLOOD BANK IS EMPTY")
-    elif p8=='A+':
-         cur.execute("Select * from donor where dbldgrp in ('A+','A-','O-','O+')")             
-         y=cur.fetchall()
-         for z in y:
-                 if z[3]== 'O+':
-                    cur.execute("Delete from donor where dbldgrp = 'O+' LIMIT 1;")
-                    tkinter.messagebox.showinfo("O+", "O+ BlOOD PRESENT IN BLOOD BANK")
-                    break
-                 elif z[3]== 'O-':
-                    cur.execute("Delete from donor where dbldgrp = 'O-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("O-", "O- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                 elif z[3]== 'A+':
-                    cur.execute("Delete from donor where dbldgrp = 'A+' LIMIT 1;")
-                    tkinter.messagebox.showinfo("A+", "A+ BlOOD PRESENT IN BLOOD BANK")
-                    break
-                 elif z[3]== 'A-':
-                    cur.execute("Delete from donor where dbldgrp = 'A-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("A-", "A- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                 else:
-                    tkinter.messagebox.showinfo("OOPS!!","BLOOD BANK IS EMPTY")
-    elif p8=='B-':
-         cur.execute("Select * from donor where dbldgrp in ('O-')")             
-         y=cur.fetchall()
-         for z in y:      
-                if z[3]== 'O-':
-                    cur.execute("Delete from donor where dbldgrp = 'O-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("O-", "O- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                else:
-                    tkinter.messagebox.showinfo("OOPS!!","BLOOD BANK IS EMPTY")
-    elif p8=='A-':
-         cur.execute("Select * from donor where dbldgrp in ('O-')")             
-         y=cur.fetchall()
-         for z in y:      
-                if z[3]== 'O-':
-                    cur.execute("Delete from donor where dbldgrp = 'O-' LIMIT 1;")
-                    tkinter.messagebox.showinfo("O-", "O- BlOOD PRESENT IN BLOOD BANK")
-                    break
-                else:
-                    tkinter.messagebox.showinfo("OOPS!!","BLOOD BANK IS EMPTY")
+
 prj.mainloop()
 
