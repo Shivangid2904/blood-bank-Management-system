@@ -16,15 +16,33 @@ icon_image=PhotoImage(file="logo.png")
 prj.iconphoto(False,icon_image)
 
 def choice_func():
-     global prj
+     
      def dispStock():
-        # Clear previous widgets if dispStock is called multiple times
-        for widget in prj.winfo_children():
-            widget.destroy()
+    # Clear previous widgets if dispStock is called multiple times
+        login.destroy()
+        b2.destroy()
+        b3.destroy()
+        btn_frame.destroy()
+        menu.destroy()
+        w1.destroy()
+        w2.destroy()
+        w3.destroy()
+        w4.destroy()
+        w5.destroy()
+        w6.destroy()
+        w7.destroy()
+        w8.destroy()
+        w9.destroy()
+        w10.destroy()
+        w11.destroy()
+        w12.destroy()
+        w13.destroy()
+        w14.destroy()
 
+        # Set window geometry and title
         prj.geometry('900x400')
         prj.title("Blood Stock Availability")
-        
+
         # Blood Group Input (ComboBox)
         Label(prj, text="Blood Group:").pack(padx=10, pady=5)
         blood_group_var = StringVar()
@@ -44,7 +62,7 @@ def choice_func():
         ], state="readonly")
         blood_type_combobox.pack(padx=10, pady=5)
 
-        # TreeView Table
+        # TreeView Table for displaying stock information
         columns = ('Name', 'Age', 'Phone No.', 'Units')
         tree = ttk.Treeview(prj, columns=columns, show='headings')
         for col in columns:
@@ -54,14 +72,16 @@ def choice_func():
         scrollbar = ttk.Scrollbar(prj, orient=VERTICAL, command=tree.yview)
         tree.configure(yscroll=scrollbar.set)
         scrollbar.pack(side=RIGHT, fill=Y)
+        
+        prj.resizable(False, False)
 
-        # ✅ Define `search_stock` inside `dispStock()`
+        # Define `search_stock` inside `dispStock()`
         def search_stock():
             tree.delete(*tree.get_children())  # Clear previous data
             blood_group = blood_group_var.get()
             blood_type = blood_type_var.get()
             
-            query = "SELECT dname, dage, dphno,dunits FROM donor WHERE dbldgrp=%s AND dpreftype=%s"
+            query = "SELECT dname, dage, dphno, dunits FROM donor WHERE dbldgrp=%s AND dpreftype=%s"
             cur.execute(query, (blood_group, blood_type))
             records = cur.fetchall()
             
@@ -71,9 +91,11 @@ def choice_func():
             else:
                 tree.insert('', END, values=("No stock available", "", "", ""))
 
-        # ✅ Search Button (Now it correctly references `search_stock`)
+        # Search Button (Now it correctly references `search_stock`)
         search_button = Button(prj, text="Check Availability", command=search_stock)
         search_button.pack(pady=10)
+
+        
      def dispReceiv():
         login.destroy()
         b2.destroy()
@@ -161,7 +183,7 @@ def choice_func():
         prj.geometry('900x400')
         icon_image = PhotoImage(file="logo.png")
         prj.iconphoto(False, icon_image)
-        prj.title("DISPLAY RECEIVER INFORMATION")
+        prj.title("Compatible Donors")
         prj.resizable(False, False)
 
     
