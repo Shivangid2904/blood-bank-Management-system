@@ -91,12 +91,12 @@ def choice_func():#main function of menu
             else:
                 tree.insert('', END, values=("No stock available", "", "", ""))
 
-        # Search Button (Now it correctly references `search_stock`)
+        # Search Button to initiate the search
         search_button = Button(prj, text="Check Availability", command=search_stock)
         search_button.pack(pady=10)
 
         
-     def dispReceiv():
+     def dispReceiv():#display the compatible donors
         login.destroy()
         b2.destroy()
         b3.destroy()
