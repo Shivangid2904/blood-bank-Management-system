@@ -5,10 +5,10 @@ import tkinter.messagebox
 import csv
 import mysql.connector  as mycon
 import datetime
-conn=mycon.connect(host="localhost",user="root",passwd="Sony@2003",database="bbm")
-cur=conn.cursor()
+conn=mycon.connect(host="localhost",user="root",passwd="shivangi2904",database="bbm")
+cur=conn.cursor()# Create a cursor object
 import ast
-prj=Tk()
+prj=Tk() # GUI window
 prj.geometry("925x500+250+100")
 prj.config(bg="white")
 prj.title("BLOOD BANK MANAGEMENT SYSTEM")
@@ -526,32 +526,32 @@ def check_func():
 
   file=open("datasheet.txt","r")
   d=file.read()
-  r=ast.literal_eval(d)
+  r=ast.literal_eval(d) # Converts string data into a Python dictionary
   file.close()
   print(r.keys())
-  userArr=r["Username"]
+  userArr=r["Username"] # Extracts the list of usernames
   fndUser=False
   for i in range(len(userArr)):
-      if(username==userArr[i]):
+      if(username==userArr[i]): # Checks if the username exists in the list
           fndUser=True
           break
   if  (len(username)!=0 and len(password)!=0) and fndUser and password==r["Password"][i]:
       signin=Button(command=lambda:[check_func(),choice_func()])
       print(username)
       tkinter.messagebox.showinfo("SUCCESSFULL","Your are Logged in Successfully")
-      prj.withdraw()
+      prj.withdraw()# Hides the login window
   else:        
       tkinter.messagebox.showerror("Invalid","invalid username or password")
-      exit()
+      exit()# Exits the program if login fails
 img=PhotoImage(file='login.png')
 Label(prj,image=img,bg='white').place(x=50,y=50)
 heading=Label(frame,text="Sign in",fg='#57a1f8',bg="white",font=("Microsoft YaHei UI Light",23,'bold'))
 heading.place(x=25,y=5)
 def on_enter(e):
-    user.delete(0,'end')
+    user.delete(0,'end')# Clears the text when the user clicks the field
 def on_leave(e):
     name=user.get()
-    if name=='':
+    if name=='':# If no input, insert default text "Username"
         user.insert(0,'Username')
 user=Entry(frame,width=20,fg='Black',border=0,borderwidth=0,highlightthickness=0,bg='white',font=('Microsoft YaHei Ui Light',11))
 user.place(x=0,y=80)
@@ -567,9 +567,9 @@ def on_leave(e):
         code.insert(0,'Password')
 code=Entry(frame,width=20,fg='Black',border=0,borderwidth=0,highlightthickness=0,bg='white',font=('Microsoft YaHei Ui Light',11))
 code.place(x=0,y=150)
-code.insert(0,'Password')
-code.bind("<FocusIn>", on_enter)
-code.bind("<FocusOut>",on_leave)
+code.insert(0,'Password')# Insert placeholder text
+code.bind("<FocusIn>", on_enter)# Bind function to remove text when focused
+code.bind("<FocusOut>",on_leave)# Bind function to restore text if empty
 Frame(frame,width=200,height=2,bg="black").place(x=0,y=175)
 signin=Button(frame,width=6,text="Sign in",border=0,bg='white',cursor='hand2',fg='#57a1f8',command=lambda:[check_func(),choice_func()])
 signin.place(x=125,y=200)
@@ -643,4 +643,5 @@ def entry2():
     conn.commit()
 
 prj.mainloop()
+
 
