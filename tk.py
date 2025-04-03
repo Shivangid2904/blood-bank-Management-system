@@ -15,7 +15,7 @@ prj.title("BLOOD BANK MANAGEMENT SYSTEM")
 icon_image=PhotoImage(file="logo.png")
 prj.iconphoto(False,icon_image)
 
-def choice_func():
+def choice_func():#main function of menu
      
      def dispStock():
     # Clear previous widgets if dispStock is called multiple times
