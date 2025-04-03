@@ -6,7 +6,7 @@ import csv
 import mysql.connector  as mycon
 import datetime
 conn=mycon.connect(host="localhost",user="root",passwd="shivangi2904",database="bbm")
-cur=conn.cursor()
+cur=conn.cursor()# Create a cursor object
 import ast
 prj=Tk() # GUI window
 prj.geometry("925x500+250+100")
@@ -567,9 +567,9 @@ def on_leave(e):
         code.insert(0,'Password')
 code=Entry(frame,width=20,fg='Black',border=0,borderwidth=0,highlightthickness=0,bg='white',font=('Microsoft YaHei Ui Light',11))
 code.place(x=0,y=150)
-code.insert(0,'Password')
-code.bind("<FocusIn>", on_enter)
-code.bind("<FocusOut>",on_leave)
+code.insert(0,'Password')# Insert placeholder text
+code.bind("<FocusIn>", on_enter)# Bind function to remove text when focused
+code.bind("<FocusOut>",on_leave)# Bind function to restore text if empty
 Frame(frame,width=200,height=2,bg="black").place(x=0,y=175)
 signin=Button(frame,width=6,text="Sign in",border=0,bg='white',cursor='hand2',fg='#57a1f8',command=lambda:[check_func(),choice_func()])
 signin.place(x=125,y=200)
