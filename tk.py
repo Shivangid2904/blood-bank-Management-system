@@ -539,10 +539,10 @@ def check_func():
       signin=Button(command=lambda:[check_func(),choice_func()])
       print(username)
       tkinter.messagebox.showinfo("SUCCESSFULL","Your are Logged in Successfully")
-      prj.withdraw()# Hides the login window
+      prj.withdraw()
   else:        
       tkinter.messagebox.showerror("Invalid","invalid username or password")
-      exit()# Exits the program if login fails
+      exit()
 img=PhotoImage(file='login.png')
 Label(prj,image=img,bg='white').place(x=50,y=50)
 heading=Label(frame,text="Sign in",fg='#57a1f8',bg="white",font=("Microsoft YaHei UI Light",23,'bold'))
