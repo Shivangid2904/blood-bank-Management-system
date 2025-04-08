@@ -1,0 +1,1 @@
+prj.protocol("WM_DELETE_WINDOW",on_win_close)
